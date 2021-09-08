@@ -10,6 +10,7 @@ import CoreData
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    
     var isOnPause = false
     
     var fetchResultsController: NSFetchedResultsController<SphereTimer>!
@@ -22,13 +23,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let startButton: UIButton = UIButton(type: .system)
     let pauseButton: UIButton = UIButton(type: .system)
     let timerTable: UITableView = UITableView()
-    var itemsToLoad: [String] = ["One", "Two", "Three"]
-    let navigationBar: UINavigationBar = UINavigationBar()
+   // let navigationBar: UINavigationBar = UINavigationBar()
 
     
     override func viewWillLayoutSubviews() {
         let navigationBar = UINavigationBar(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: 44))
-        navigationBar.barTintColor = UIColor.lightGray
+        navigationBar.barTintColor = UIColor.systemGray5
         view.addSubview(navigationBar);
         let navigationItem = UINavigationItem(title: "Мултитаймер")
         navigationBar.setItems([navigationItem], animated: false)
@@ -189,7 +189,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 }//end if context
             }
 
-
+        
             
             
            
@@ -237,20 +237,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     } //end startTimer
     
-    @objc func pauseTimer () {
-        print("pause button tapped")
+    
+    
+    @objc func pauseTimer (_ sender: UIButton) {
+       // print("pause button tapped")
        
-        if isOnPause {
+        if sender == pauseButton && isOnPause {
             isOnPause = false
             pauseButton.setTitle("Поставить на паузу", for: .normal)
-        } else {
+        } else if sender == pauseButton && !isOnPause {
             isOnPause = true
             pauseButton.setTitle("Снять с паузы", for: .normal)
-        }
+        } 
         
         
         
-    } //end startTimer
+    } //end pauseTimer
     
     
     
@@ -261,10 +263,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath as IndexPath) as! TimerTableCell
-
-        //cell.textLabel?.text = timers[indexPath.row].sphereTimerName
-        //cell.detailTextLabel?.text = String(timers[indexPath.row].sphereTimerLength)
-
 
         cell.timerNameInTable.text = timers[indexPath.row].sphereTimerName
         cell.timerLengthInTable.text = String(timers[indexPath.row].sphereTimerLength)
