@@ -13,6 +13,8 @@
 		78A282BA26DBEA25001B71A1 /* Sphere.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 78A282B826DBEA25001B71A1 /* Sphere.xcdatamodeld */; };
 		78A282BC26DBEA26001B71A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78A282BB26DBEA26001B71A1 /* Assets.xcassets */; };
 		78A282BF26DBEA26001B71A1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 78A282BD26DBEA26001B71A1 /* LaunchScreen.storyboard */; };
+		78A282C726E36E9E001B71A1 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A282C626E36E9E001B71A1 /* CoreDataStack.swift */; };
+		78A282CB26E4D57D001B71A1 /* TimerTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A282CA26E4D57D001B71A1 /* TimerTableCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		78A282BB26DBEA26001B71A1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		78A282BE26DBEA26001B71A1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		78A282C026DBEA26001B71A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		78A282C626E36E9E001B71A1 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		78A282CA26E4D57D001B71A1 /* TimerTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTableCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 				78A282AF26DBEA25001B71A1 /* AppDelegate.swift */,
 				78A282B126DBEA25001B71A1 /* SceneDelegate.swift */,
 				78A282B326DBEA25001B71A1 /* ViewController.swift */,
+				78A282CA26E4D57D001B71A1 /* TimerTableCell.swift */,
+				78A282C626E36E9E001B71A1 /* CoreDataStack.swift */,
 				78A282BB26DBEA26001B71A1 /* Assets.xcassets */,
 				78A282BD26DBEA26001B71A1 /* LaunchScreen.storyboard */,
 				78A282C026DBEA26001B71A1 /* Info.plist */,
@@ -136,9 +142,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A282C726E36E9E001B71A1 /* CoreDataStack.swift in Sources */,
 				78A282B426DBEA25001B71A1 /* ViewController.swift in Sources */,
 				78A282B026DBEA25001B71A1 /* AppDelegate.swift in Sources */,
 				78A282BA26DBEA25001B71A1 /* Sphere.xcdatamodeld in Sources */,
+				78A282CB26E4D57D001B71A1 /* TimerTableCell.swift in Sources */,
 				78A282B226DBEA25001B71A1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
