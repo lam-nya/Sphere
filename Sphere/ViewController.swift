@@ -10,6 +10,8 @@ import CoreData
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    var isOnPause = false
+    
     var fetchResultsController: NSFetchedResultsController<SphereTimer>!
     
     var timers: [SphereTimer] = []
@@ -18,24 +20,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let timerName: UITextField = UITextField()
     let timerLength: UITextField = UITextField()
     let startButton: UIButton = UIButton(type: .system)
+    let pauseButton: UIButton = UIButton(type: .system)
     let timerTable: UITableView = UITableView()
     var itemsToLoad: [String] = ["One", "Two", "Three"]
     let navigationBar: UINavigationBar = UINavigationBar()
 
     
     override func viewWillLayoutSubviews() {
-//        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: UIApplication.shared.statusBarFrame.size.height + 44))
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y: 50, width: view.frame.width, height: 44))
         navigationBar.barTintColor = UIColor.lightGray
         view.addSubview(navigationBar);
-        let navigationItem = UINavigationItem(title: "Мулти таймер")
+        let navigationItem = UINavigationItem(title: "Мултитаймер")
         navigationBar.setItems([navigationItem], animated: false)
         
-        NSLayoutConstraint.activate([
-            navigationBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            navigationBar.heightAnchor.constraint(equalToConstant: 64)
-            
-        ])
     }
     
     override func viewDidLoad() {
@@ -44,9 +41,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         view = UIView()
         view.backgroundColor = .white
-//        navigationController?.navigationBar.barTintColor = UIColor.yellow
+        
+//        navigationController?.navigationBar.barTintColor = UIColor.lightGray
 //        navigationBar.translatesAutoresizingMaskIntoConstraints = false
-//        navigationBar.topItem?.title = "Мульти таймер"
+//        navigationBar.topItem?.title = "Мультитаймер"
 //        view.addSubview(navigationBar)
         
         headline.translatesAutoresizingMaskIntoConstraints = false
@@ -72,6 +70,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         startButton.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
         view.addSubview(startButton)
         
+        
+        pauseButton.translatesAutoresizingMaskIntoConstraints = false
+        pauseButton.setTitle("Поставить на паузу", for: .normal)
+        pauseButton.layer.cornerRadius = 5
+        pauseButton.backgroundColor = .systemGray5
+        pauseButton.addTarget(self, action: #selector(pauseTimer), for: .touchUpInside)
+        view.addSubview(pauseButton)
+        
 //        https://developer.apple.com/documentation/uikit/views_and_controls/table_views/adding_headers_and_footers_to_table_sections
 //        if custom header must be
 
@@ -87,16 +93,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         timerTable.register(TimerTableCell.self, forCellReuseIdentifier: "myCell")
         timerTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(timerTable)
-           
-        
-//         let headerView: UIView = UIView.init(frame: CGRect(x: 1, y: 50, width: 276, height: 30))
-//         headerView.backgroundColor = .red
-//
-//         let labelView: UILabel = UILabel.init(frame: CGRect(x: 4, y: 5, width: 276, height: 24))
-//         labelView.text = "My header view"
-//
-//         headerView.addSubview(labelView)
-//         self.timerTable.tableHeaderView = headerView
         
         NSLayoutConstraint.activate([
 
@@ -116,7 +112,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             startButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
             startButton.heightAnchor.constraint(equalToConstant: 50),
             
-            timerTable.topAnchor.constraint(equalTo: startButton.bottomAnchor, constant: 50),
+            pauseButton.topAnchor.constraint(equalTo: startButton.bottomAnchor, constant: 50),
+            pauseButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
+            pauseButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
+            pauseButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            timerTable.topAnchor.constraint(equalTo: pauseButton.bottomAnchor, constant: 50),
             timerTable.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
             timerTable.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
             timerTable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
@@ -143,48 +144,52 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
        
         _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [self] timer in
 
+            if !isOnPause {
+                if let context = (UIApplication.shared.delegate as? AppDelegate)?.coreDataStack.persistentContainer.viewContext {
+                    fetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
 
-            if let context = (UIApplication.shared.delegate as? AppDelegate)?.coreDataStack.persistentContainer.viewContext {
-                fetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+                    do {
+                        try fetchResultsController.performFetch()
+                        timers = fetchResultsController.fetchedObjects!
 
-                do {
-                    try fetchResultsController.performFetch()
-                    timers = fetchResultsController.fetchedObjects!
+                        for i in timers {
+                            if let context = (UIApplication.shared.delegate as? AppDelegate)?.coreDataStack.persistentContainer.viewContext {
 
-                    for i in timers {
-                        if let context = (UIApplication.shared.delegate as? AppDelegate)?.coreDataStack.persistentContainer.viewContext {
+                                let sphereTimerLengthCurrent = i.sphereTimerLength - 1
+                                
+                                if sphereTimerLengthCurrent > 0 {
+                                    do {
+                                        
 
-                            let sphereTimerLengthCurrent = i.sphereTimerLength - 1
-                            
-                            if sphereTimerLengthCurrent > 0 {
-                                do {
-                                    
+                                            //обновить таблицу
+                                        i.sphereTimerLength -= 1
+                                        timerTable.reloadData()
+                                        try context.save()
 
-                                        //обновить таблицу
+                                        print("Сохранение удалось")
+                                    } catch let error as NSError {
+                                        print("Не удалось сохранить данные \(error), \(error.userInfo)")
+                                    }
+
+                                } else {
                                     i.sphereTimerLength -= 1
                                     timerTable.reloadData()
+                                    context.delete(i)
+                                    timerTable.reloadData()
                                     try context.save()
-
-                                    print("Сохранение удалось")
-                                } catch let error as NSError {
-                                    print("Не удалось сохранить данные \(error), \(error.userInfo)")
                                 }
+                                }
+                        } //end for
 
-                            } else {
-                                i.sphereTimerLength -= 1
-                                timerTable.reloadData()
-                                context.delete(i)
-                            
-                            }
-                            } //end if context
-                    } //end for
+                        timerTable.reloadData()
 
-                    timerTable.reloadData()
-
-                } catch let error as NSError {
-                    print(error.localizedDescription)
-                }
+                    } catch let error as NSError {
+                        print(error.localizedDescription)
+                    }
+                }//end if context
             }
+
+
             
             
            
@@ -231,6 +236,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         
     } //end startTimer
+    
+    @objc func pauseTimer () {
+        print("pause button tapped")
+       
+        if isOnPause {
+            isOnPause = false
+            pauseButton.setTitle("Поставить на паузу", for: .normal)
+        } else {
+            isOnPause = true
+            pauseButton.setTitle("Снять с паузы", for: .normal)
+        }
+        
+        
+        
+    } //end startTimer
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
