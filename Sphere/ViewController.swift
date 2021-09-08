@@ -173,10 +173,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
                                 } else {
                                     i.sphereTimerLength -= 1
-                                    timerTable.reloadData()
+                                    try context.save()
                                     context.delete(i)
                                     timerTable.reloadData()
-                                    try context.save()
                                 }
                                 }
                         } //end for
@@ -199,7 +198,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     } //end view did load
     
-    @objc func startTimer () {
+    @objc func startTimer (_ sender: UIButton) {
         print("Button tapped")
         guard let name: String = timerName.text else {
             print("No name")
@@ -248,7 +247,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         } else if sender == pauseButton && !isOnPause {
             isOnPause = true
             pauseButton.setTitle("Снять с паузы", for: .normal)
-        } 
+        }
         
         
         
